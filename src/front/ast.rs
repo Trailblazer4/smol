@@ -7,11 +7,11 @@ pub struct Program {
     pub stmts: Vec<Stmt>,
 }
 
-#[derive(Debug)]
+#[derive(Debug, PartialEq, Eq)]
 pub enum Stmt {
     Assign(Id, Expr),
     Print(Expr),
-    Read(Expr),
+    Read(Id),
     If {
         guard: Expr,
         tt: Vec<Stmt>,
@@ -19,11 +19,11 @@ pub enum Stmt {
     },
 }
 
-#[derive(Debug)]
+#[derive(Debug, PartialEq, Eq)]
 pub enum Expr {
     Var(Id),
     Const(i64),
-    BOp {
+    BinOp {
         op: BOp,
         lhs: Box<Expr>,
         rhs: Box<Expr>,
@@ -31,7 +31,7 @@ pub enum Expr {
     Negate(Box<Expr>),
 }
 
-#[derive(Debug)]
+#[derive(Debug, PartialEq, Eq)]
 pub enum BOp {
     Mul,
     Div,

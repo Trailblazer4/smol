@@ -5,3 +5,8 @@ pub use std::collections::{BTreeMap as Map, BTreeSet as Set};
 
 /// Identifiers.
 pub type Id = internment::Intern<String>;
+
+/// Identifier factory
+pub fn id(name: &str) -> Id {
+    Id::from_ref(name)
+}

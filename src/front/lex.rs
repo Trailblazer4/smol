@@ -43,6 +43,8 @@ pub enum TokenKind {
     Div,
     #[display("<")]
     Lt,
+    #[display("~")]
+    Tilde,
     #[display("error")]
     /// For unrecognized characters.
     Error,
@@ -71,6 +73,7 @@ impl<'input> Lexer<'input> {
             (r"<", Lt),
             (r"[a-zA-Z_][a-zA-Z0-9_]*", Id),
             (r"[0-9]+", Num),
+            (r"~", Tilde),
         ]
         .into_iter()
         .map(|(regex, kind)| (Regex::new(&format!(r"\A{regex}")).unwrap(), kind))
@@ -193,6 +196,7 @@ mod tests {
                 Mul => "*",
                 Div => "/",
                 Lt => "<",
+                Tilde => "~",
             },
         }
     }

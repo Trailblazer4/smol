@@ -40,7 +40,7 @@ stmt ::= ':=' id expr      // assignment
 expr ::= id              // variables
        | num             // numeric literals
        | bop expr expr   // binary operations
-       | '-' expr        // negation
+       | '~' expr        // negation
        
 // binary operators
 bop ::= '*' | '/' | '+' | '-' | '<'
@@ -73,6 +73,7 @@ if a {
   $read b
   $read c
   $read x
-  $print a * x * x + b * x + c
+  // this is  a * x * x + b * x + c in prefix notation
+  $print + * a * x x + * b x c
 }
 ```
