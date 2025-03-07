@@ -60,7 +60,7 @@ fn main() {
             println!("{:?}", parse(&input).unwrap());
         }
         Tir => {
-            println!("{:?}", get_ir(&input, args.optimize))
+            println!("{}", get_ir(&input, args.optimize))
         }
         Asm => {
             println!("{}", code_gen(get_ir(&input, args.optimize)).asm_code())

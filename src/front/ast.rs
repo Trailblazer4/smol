@@ -1,5 +1,7 @@
 //! The abstract syntax tree.
 
+use derive_more::derive::Display;
+
 use crate::common::Id;
 
 #[derive(Debug)]
@@ -31,11 +33,16 @@ pub enum Expr {
     Negate(Box<Expr>),
 }
 
-#[derive(Debug, PartialEq, Eq)]
+#[derive(Debug, PartialEq, Eq, Clone, Copy, Display)]
 pub enum BOp {
+    #[display("mul")]
     Mul,
+    #[display("div")]
     Div,
+    #[display("add")]
     Add,
+    #[display("sub")]
     Sub,
+    #[display("lt")]
     Lt,
 }

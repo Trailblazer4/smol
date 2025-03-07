@@ -34,7 +34,9 @@ program ::= stmt*
 stmt ::= ':=' id expr      // assignment
        | '$print' expr
        | '$read' id
-       | '$if' expr '{' stmt* '}' '{' stmt* '}'
+       | '$if' expr block block
+       
+block ::= '{' stmt* '}'
 
 // expressions
 expr ::= id              // variables
