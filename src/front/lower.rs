@@ -95,7 +95,13 @@ impl Lower {
                 self.tv.push(Inner(Instruction::Read(x)));
             }
             Stmt::If { guard, tt, ff } => {
-                todo!()
+                let lbl_tt = self.mk_label();
+                let lbl_ff = self.mk_label();
+                let lbl_join = self.mk_label();
+                let guard = self.lower_expr(guard);
+                self.tv.push(Term(Terminator::Branch { guard, tt: lbl_tt, ff: lbl_ff }));
+                
+                self.tv.push(Label(lbl_tt));
             },
         }
     }
@@ -138,5 +144,35 @@ impl Lower {
 }
 
 fn construct_cfg(tv: Vec<TvEntry>) -> Map<Id, Block> {
-    todo!()
+    let mut tv_iter = tv.iter();
+
+    let mut grammar: Map<Id, Block> = Map::new();
+
+    let mut curr_block = match tv_iter.next() {
+        Some(Label(id)) => id,
+        _ => { return grammar; }
+    };
+
+    let mut insn: Vec<Instruction> = vec![];
+
+    for channel in tv_iter {
+        match channel {
+            Label(id) => {
+                curr_block = id;
+            },
+            Inner(ins) => {
+                insn.push(ins.clone());
+            },
+            Term(term) => {
+                grammar.insert(*curr_block, Block { insn, term: term.clone() });
+                insn = vec![];
+            }
+        }
+    }
+
+    grammar
 }
+
+// fn main() {
+
+// }
