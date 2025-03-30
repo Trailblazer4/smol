@@ -276,7 +276,7 @@ mod tests {
             ]
         );
         assert_eq!(
-            get_tokens("x yz $print $read $if { } +  0   -  //hi\n * $ read / < "),
+            get_tokens("x yz $print $read $if { } +  0   -  //hi\n * $ read / < ~"),
             vec![
                 id("x"),
                 id("yz"),
@@ -293,6 +293,7 @@ mod tests {
                 id("read"),
                 t(Div),
                 t(Lt),
+                t(Tilde),
             ]
         );
     }

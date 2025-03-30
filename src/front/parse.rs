@@ -59,7 +59,6 @@ impl<'a> Parser<'a> {
         self.peek().map(|t| t.kind == kind).unwrap_or(false)
     }
 
-    // Consume the token of given kind if able, return whether it is consumed
     fn eat(&mut self, kind: TokenKind) -> bool {
         if self.next_is(kind) {
             self.tokens.pop();
@@ -69,7 +68,6 @@ impl<'a> Parser<'a> {
         }
     }
 
-    // Expect a token of given kind
     fn expect(&mut self, kind: TokenKind) -> ParseResult<Token> {
         if self.next_is(kind) {
             self.next()
@@ -86,32 +84,31 @@ impl<'a> Parser<'a> {
     }
 
     fn parse_program(&mut self) -> ParseResult<Program> {
-        let mut stmts: Vec<Stmt> = vec![];
+        let mut stmts = vec![];
 
         while !self.tokens.is_empty() {
-            // block, stmt, expr, binop
             stmts.push(self.parse_stmt()?);
         }
 
-        Ok(Program {stmts})
+        Ok(Program { stmts })
     }
 
     fn parse_stmt(&mut self) -> ParseResult<Stmt> {
         let tok = self.next()?;
         match tok.kind {
-            TokenKind::Assign => Ok(Stmt::Assign(self.parse_id()?, self.parse_expr()?)),
+            TokenKind::Assign => {
+                let lhs = id(self.expect(TokenKind::Id)?.text);
+                let rhs = self.parse_expr()?;
+                Ok(Stmt::Assign(lhs, rhs))
+            }
             TokenKind::Print => Ok(Stmt::Print(self.parse_expr()?)),
             TokenKind::Read => Ok(Stmt::Read(id(self.expect(TokenKind::Id)?.text))),
             TokenKind::If => {
                 let guard = self.parse_expr()?;
                 let tt = self.parse_block()?;
-                // if !self.eat(TokenKind::Else) {
-                //    return Err(ParseError(String::from("Expected else block")))
-                // }
                 let ff = self.parse_block()?;
-
-                Ok(Stmt::If {guard, tt, ff})
-            },
+                Ok(Stmt::If { guard, tt, ff })
+            }
             _ => Err(ParseError(format!(
                 "Expected start of a statement, found {}",
                 tok.text
@@ -141,7 +138,7 @@ impl<'a> Parser<'a> {
 
         match tok.kind {
             TokenKind::Id => Ok(Var(id(tok.text))),
-            TokenKind::Num => Ok(Const(tok.text.parse::<i64>().unwrap())),
+            TokenKind::Num => Ok(Const(tok.text.parse().unwrap())),
             TokenKind::Plus => self.parse_binop(BOp::Add),
             TokenKind::Minus => self.parse_binop(BOp::Sub),
             TokenKind::Mul => self.parse_binop(BOp::Mul),
